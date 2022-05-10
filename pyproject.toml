@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=42.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fool"
+version = "0.1.0"
+description = "Играть в дурака с компьютером."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+authors = [{name = "Aleksei Shabashov"}, {email = "pilulkinjr@icloud.com"}]
+
+[project.optional-dependencies]
+test = [
+  "pytest > 7.1.0",
+  "pytest-cov[all]",
+]
+
+[project.urls]
+repository = "https://github.com/PilulkinJr/fool"
+
+[project.scripts]
+fool = "fool.__main__:main"
+
+[tool.black]
+line-length = 99
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort] 
+py_version = 38
+profile = 'black'
+known_first_party = ["fool"]
+
+[tool.flakehell]                                                                                                            
+max_line_length = 99                                                                                                        
+strictness = "short"                                                                                                        
+docstring_style = "numpy"                                                                                                   
+docstring_convention = "numpy"                                                                                              
+max_doc_length = 99
+
+[tool.flakehell.plugins]
+"flake8-*" = ["+*"]
+flake8-docstrings = ["-*", "-D105"]
+mccabe = ["+*"]
+pyflakes = ["+*", "-F401", "-F841"]
+pycodestyle = ["+*", "-W503", "-E203"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=fool"
+testpaths = ["tests"]

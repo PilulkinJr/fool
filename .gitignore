@@ -130,3 +130,5 @@ dmypy.json
 
 # pyright
 pyrightconfig.json
+
+notebooks
