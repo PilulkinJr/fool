@@ -1,6 +1,6 @@
 """Имплементация карты и набора карт."""
 import logging
-from typing import List, Optional, Set
+from typing import List, Set
 
 log = logging.getLogger(__name__)
 
@@ -27,7 +27,6 @@ class Card:
             Козырь.
         """
         self._trump: bool
-        self._icon: str
 
         self._validate_value(value)
         self._value: int = value
@@ -35,14 +34,21 @@ class Card:
         self._validate_suit(suit)
         self._suit: int = suit
 
+        self._icon: str = self.VALUE_ICONS[self._value].rjust(2) + " "
+
         self.trump = trump
 
     @classmethod
     def _validate_value(cls, value: int) -> None:
         if not isinstance(value, int):
-            raise TypeError
+            raise TypeError(
+                f"Неверный тип для достоинства карты: {type(value)}, должен быть {int}."
+            )
         if value < 0 or value > len(cls.VALUE_ICONS) - 1:
-            raise ValueError
+            raise ValueError(
+                f"Неверное значение для достоиства карты: {value}, "
+                f"должно быть число в диапазоне [0 - {len(cls.VALUE_ICONS) - 1}]."
+            )
 
     @property
     def value(self) -> int:
@@ -52,9 +58,12 @@ class Card:
     @classmethod
     def _validate_suit(cls, suit: int) -> None:
         if not isinstance(suit, int):
-            raise TypeError
-        if suit < 0 or suit > len(cls.VALUE_ICONS) - 1:
-            raise ValueError
+            raise TypeError(f"Неверный тип для масти карты: {type(suit)}, должен быть {int}.")
+        if suit < 0 or suit > len(cls.SUIT_ICONS) - 1:
+            raise ValueError(
+                f"Неверное значение для масти карты: {suit}, "
+                f"должно быть число в диапазоне [0 - {len(cls.SUIT_ICONS) - 1}]."
+            )
 
     @property
     def suit(self) -> int:
@@ -64,7 +73,7 @@ class Card:
     @classmethod
     def _validate_trump(cls, trump: bool) -> None:
         if not isinstance(trump, bool):
-            raise TypeError
+            raise TypeError(f"Неверный тип для козыря карты: {type(trump)}, должен быть {bool}.")
 
     @property
     def trump(self) -> bool:
@@ -113,13 +122,13 @@ class CardList(list):
     def _validate_cards(cls, cards: List[Card]) -> None:
         for i, card_a in enumerate(cards):
             for _, card_b in enumerate(cards[i + 1 :]):
-                if card_a == card_b:
+                if (card_a.value == card_b.value) and (card_a.suit == card_b.suit):
                     raise RuntimeError(
-                        f"{cards} содержит две одинаковые карты: {card_a} и {card_b}"
+                        f"{cards} содержит две одинаковые карты: {card_a!r} и {card_b!r}"
                     )
                 if (card_a.trump and card_b.trump) and (card_a.suit != card_b.suit):
                     raise RuntimeError(
-                        f"{cards} содержит два различных козыря: {card_a} и {card_b}"
+                        f"{cards} содержит два различных козыря: {card_a!r} и {card_b!r}"
                     )
 
     def __repr__(self) -> str:
